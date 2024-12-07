@@ -6,7 +6,7 @@ function Footer() {
         <div className="bg-black text-light">
         <Container>
             <Row>
-                <Col className="text-center py-3">Credits &copy; Tolentino 2024</Col>
+                <Col className="text-center py-3">Credits &copy; SkyFlix 2024</Col>
             </Row>
         </Container>
         </div>
