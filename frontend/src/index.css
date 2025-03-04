@@ -1,0 +1,38 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.go-back {
+  background-color: #000000;
+  color: white;
+  border: none;
+  padding: 10px 40px; /* Increase horizontal padding */
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.3s, transform 0.2s;
+  margin: 10px; /* Adds space around the button */
+  display: inline-block;
+}
+
+
+.go-back:hover {
+  background-color: #000000;
+  transform: scale(1.05);
+}
+
+.go-back:active {
+  background-color: #000000;
+  transform: scale(0.95);
+}
