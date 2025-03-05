@@ -20,19 +20,26 @@ code {
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 10px;
   transition: background 0.3s, transform 0.2s;
-  margin: 10px; /* Adds space around the button */
+  margin: 20px 0; /* Adds vertical space (top and bottom) around the button */
   display: inline-block;
+  text-align: center; /* Ensure text is centered if needed */
 }
 
-
 .go-back:hover {
-  background-color: #000000;
+  background-color: #333333;
   transform: scale(1.05);
 }
 
 .go-back:active {
-  background-color: #000000;
+  background-color: #111111;
   transform: scale(0.95);
+}
+
+
+.movie-player {
+  margin-top: 20px;
+  max-width: 100%;
+  height: auto;
 }
