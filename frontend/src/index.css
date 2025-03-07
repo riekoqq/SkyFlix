@@ -1,0 +1,136 @@
+/* General Page Settings */
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: 'Arial', sans-serif;
+  background-color: #121212; /* Dark grayish black */
+  color: #E0E0E0; /* Light gray for readability */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+/* Header & Footer */
+header, footer {
+  background-color: #1A1A1A; /* Slightly lighter black */
+  color: #F5F5F5;
+  padding: 15px;
+  text-align: center;
+}
+
+/* Movie Player Section */
+.movie-player-screen {
+  width: 100%;
+  min-height: 100vh; /* Full viewport height */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 50px;
+  background-color: #181818; /* A step lighter than body */
+}
+
+/* Video Container */
+.video-container {
+  width: 90%;
+  max-width: 1200px;
+  max-height: 80vh;
+  overflow: auto; /* Enables scrolling */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #222222; /* Slightly different black for contrast */
+  border-radius: 10px;
+  padding: 10px;
+}
+
+/* Video Player */
+video {
+  width: 100%;
+  height: auto;
+  object-fit: contain; /* Prevents cropping */
+}
+
+/* Scrollable Movie - Panning */
+.video-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.video-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2); /* Faint white */
+  border-radius: 5px;
+}
+
+.video-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05); /* Almost black */
+}
+
+/* Movie Cards */
+.movie-card {
+  background-color: #202020; /* Dark gray, slightly lifted from background */
+  color: #E0E0E0;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5); /* Subtle shadow */
+  transition: transform 0.3s ease-in-out;
+}
+
+.movie-card:hover {
+  transform: scale(1.03);
+}
+
+/* Buttons */
+.go-back {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.go-back:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+}
+
+/* Footer */
+.footer {
+  background-color: #181818;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 10px;
+  text-align: center;
+}
+
+.card {
+  background-color: #1E1E1E !important; /* Dark gray background */
+  color: #E0E0E0 !important; /* Light gray text */
+  border: 1px solid #333 !important; /* Subtle border */
+}
+
+.card-body {
+  background-color: #2A2A2A !important; /* Slightly lighter black */
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.card-title {
+  color: #ffffff !important; /* White title */
+}
+
+.card-text {
+  color: #B0B0B0 !important; /* Light gray text */
+}
+
+.listgroup-item {
+  background-color: #2A2A2A !important; /* Slightly lighter black */
+  padding: 20px;
+  border-radius: 10px;
+}
