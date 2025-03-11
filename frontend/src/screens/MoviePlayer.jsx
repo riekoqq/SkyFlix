@@ -1,35 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { Button, Spinner } from 'react-bootstrap';
+import { useSelector, useDispatch } from 'react-redux';
+import { listMovieDetails } from '../actions/movieActions';
 
 function MoviePlayer() {
     const { id } = useParams();
     const navigate = useNavigate();
-    const [videoUrl, setVideoUrl] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const dispatch = useDispatch();
+
+    const movieDetails = useSelector((state) => state.movieDetails);
+    const { error, loading, movie } = movieDetails;
 
     useEffect(() => {
-        const fetchMovie = async () => {
-            try {
-                const response = await axios.get(`http://localhost:8000/api/movies/${id}/`);
-                setVideoUrl(response.data.video);
-            } catch (err) {
-                setError("Failed to load video.");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchMovie();
-    }, [id]);
+        dispatch({ type: 'MOVIE_DETAILS_RESET' }); // Clear previous movie data
+        dispatch(listMovieDetails(id));
+    }, [dispatch, id]);
 
     return (
         <div className="movie-player-container">
-            <Button className="go-back" onClick={() => navigate(-1)}>
-                ❌
-            </Button>
+            <Button className="go-back" onClick={() => navigate(-1)}>❌</Button>
 
             {loading ? (
                 <div className="loading-container">
@@ -38,9 +28,9 @@ function MoviePlayer() {
                 </div>
             ) : error ? (
                 <p className="error-message">{error}</p>
-            ) : videoUrl ? (
+            ) : movie?.video ? (
                 <video
-                    src={videoUrl}
+                    src={movie.video}
                     controls
                     width="100%"
                     height="80vh"

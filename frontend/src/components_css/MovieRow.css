@@ -1,0 +1,22 @@
+.movie-row {
+    margin: 20px 0;
+}
+
+.row-title {
+    color: white;
+    margin-left: 20px;
+    font-size: 1.2rem;
+}
+
+.movies-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 10px 20px;
+    gap: 10px;
+}
+
+/* Hide scrollbar */
+.movies-container::-webkit-scrollbar {
+    display: none;
+}

@@ -1,14 +1,31 @@
-/* General Page Settings */
-body, html {
-  margin: 0;
-  padding: 0;
+body {
+  background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+  overflow-x: hidden;
+  height: 100vh;
+  position: relative;
+}
+
+/* Create animated stars */
+body::after {
+  content: "";
   width: 100%;
   height: 100%;
-  font-family: 'Arial', sans-serif;
-  background-color: #121212; /* Dark grayish black */
-  color: #E0E0E0; /* Light gray for readability */
-  overflow-x: hidden; /* Prevent horizontal scrolling */
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: url('https://www.transparenttextures.com/patterns/stardust.png'); /* Star texture */
+  opacity: 0.4;
+  animation: twinkling 3s infinite alternate;
+  pointer-events: none; /* FIX: Allows interactions */
 }
+
+
+/* Twinkling animation */
+@keyframes twinkling {
+  0% { opacity: 0.3; }
+  100% { opacity: 0.5; }
+}
+
 
 /* Header & Footer */
 header, footer {

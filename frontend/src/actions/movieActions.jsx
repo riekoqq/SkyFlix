@@ -30,10 +30,10 @@ export const listMovieDetails = (id) => async (dispatch) => {
     try {
         dispatch({ type: MOVIE_DETAILS_REQUEST });
 
-        const { data } = await axios.get(`/api/movies/${id}/`); // Fetch movie metadata (title, description, etc.)
+        const { data } = await axios.get(`/api/movies/${id}/`);
 
-        // Instead of fetching the video as a blob, provide the streaming URL directly
-        const videoURL = `${process.env.REACT_APP_API_URL}/api/movies/${id}/video/`;
+        // Construct video URL dynamically
+        const videoURL = `${process.env.REACT_APP_API_URL || ''}/api/movies/${id}/video/`;
 
         dispatch({
             type: MOVIE_DETAILS_SUCCESS,
