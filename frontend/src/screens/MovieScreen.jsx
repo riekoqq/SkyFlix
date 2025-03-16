@@ -54,7 +54,7 @@ function MovieScreen() {
                                 🎬 Watch Now
                             </Button>
                             <Button className="go-back mx-2" onClick={() => navigate(-1)}>
-                                X
+                                ❌
                             </Button>
                         </Col>
                     </Row>

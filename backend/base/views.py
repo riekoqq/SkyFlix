@@ -1,10 +1,17 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from .models import Movie
-from .serializers import MovieSerializer
-from django.http import FileResponse, JsonResponse, StreamingHttpResponse, HttpResponse
+from .models import Movie, CustomUser
+from .serializers import MovieSerializer, UserSerializer
+from django.http import FileResponse, StreamingHttpResponse, HttpResponse
 from django.shortcuts import get_object_or_404
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from django.contrib.auth.hashers import make_password
+from .serializers import *
+from rest_framework import status
 import os
+
 
 @api_view(['GET'])
 def getMovies(request):
@@ -23,9 +30,6 @@ from django.shortcuts import get_object_or_404
 import os
 
 def movie_video(request, id):
-    """
-    Stream video files with support for range requests.
-    """
     movie = get_object_or_404(Movie, _id=id)
     if not movie.video:
         return HttpResponse("No video available", status=404)
@@ -34,13 +38,11 @@ def movie_video(request, id):
     file_size = os.path.getsize(video_path)
     range_header = request.headers.get('Range', None)
 
-    # If a Range header is provided, stream only that part
     if range_header:
         start = 0
         end = file_size - 1
 
         try:
-            # Example Range header: "bytes=1000-5000"
             range_value = range_header.strip().split('=')[1]
             range_parts = range_value.split('-')
             if range_parts[0]:
@@ -76,3 +78,38 @@ def movie_video(request, id):
     # No Range header, serve the full file
     return FileResponse(open(video_path, 'rb'), content_type='video/mp4')
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getUserProfile(request):
+    user = request.user
+    serializer = UserSerializer(user, many=False)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def registerUser(request):
+    data = request.data
+    try:
+        user = CustomUser.objects.create(
+            username=data['username'],
+            email=data['email'],
+            password=make_password(data['password'])
+        )
+        serializer = UserSerializerWithToken(user, many=False)
+        return Response(serializer.data)
+    except:
+        message = {'detail': 'User with this email already exists'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        serializer = UserSerializerWithToken(self.user).data
+
+        for k, v in serializer.items():
+            data[k] = v
+
+        return data
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
