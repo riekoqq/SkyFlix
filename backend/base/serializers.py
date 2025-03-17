@@ -16,7 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['_id', 'email', 'role', 'isAdmin']
 
-    def get__id(self, obj):  # ✅ Correct method name
+    def get__id(self, obj):
         return obj.id
     
     def get_email(self, obj):

@@ -59,6 +59,7 @@ class Movie(models.Model):
     actors = models.CharField(max_length=200, null=True, blank=True)
     image = models.ImageField(upload_to=upload_image_path, null=True, blank=True)
     video = models.FileField(upload_to=upload_image_path, null=True, blank=True)
+    restricted = models.BooleanField(default=True)
     _id = models.AutoField(primary_key=True)
 
     def __str__(self):

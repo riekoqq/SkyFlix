@@ -1,23 +1,25 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { thunk } from 'redux-thunk';
-import { movieListReducer } from "./reducers/moviesReducers";
-import { movieDetailsReducer } from "./reducers/moviesReducers";
+import { movieListReducer } from "./reducers/movieReducers";
+import { movieDetailsReducer } from "./reducers/movieReducers";
+import { userLoginReducer } from "./reducers/userReducers";
 
 const reducer = combineReducers({
     movieList: movieListReducer,
     movieDetails: movieDetailsReducer,
+    userLogin: userLoginReducer,
 })
 
+const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null
+
 const initialState = {
-
+    userLogin: { userInfo: userInfoFromStorage },
 }
-
-const middleware = [thunk]
 
 const store = configureStore({
     reducer,
-    initialState,
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(middleware),
+    preloadedState: initialState,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
 })
 
 export default store
