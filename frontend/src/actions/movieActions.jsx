@@ -1,3 +1,4 @@
+// movieActions.js
 import axios from 'axios';
 import {
     MOVIE_LIST_REQUEST,
@@ -11,7 +12,15 @@ import {
 export const listMovies = () => async (dispatch) => {
     try {
         dispatch({ type: MOVIE_LIST_REQUEST });
-        const { data } = await axios.get('/api/movies/');
+
+        // Get token from localStorage        
+        const config = {
+            withCredentials: true,  // This sends cookies along
+        };
+        
+
+        const { data } = await axios.get('/api/movies/', config);
+
         dispatch({
             type: MOVIE_LIST_SUCCESS,
             payload: data,
@@ -30,7 +39,13 @@ export const listMovieDetails = (id) => async (dispatch) => {
     try {
         dispatch({ type: MOVIE_DETAILS_REQUEST });
 
-        const { data } = await axios.get(`/api/movies/${id}/`);
+        // Get token from localStorage
+        const config = {
+            withCredentials: true,  // This sends cookies along
+        };
+        
+
+        const { data } = await axios.get(`/api/movies/${id}/`, config);
 
         // Construct video URL dynamically
         const videoURL = `${process.env.REACT_APP_API_URL || ''}/api/movies/${id}/video/`;
