@@ -51,11 +51,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.email}"
+class Genre(models.Model):
+    name = models.CharField(max_length=200, null=True, blank=True)
+    def __str__(self):
+        return self.name
 
 class Movie(models.Model):
     title = models.CharField(max_length=200, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    genre = models.CharField(max_length=200, null=True, blank=True)
+    genre = models.ManyToManyField(Genre)
     actors = models.CharField(max_length=200, null=True, blank=True)
     image = models.ImageField(upload_to=upload_image_path, null=True, blank=True)
     video = models.FileField(upload_to=upload_image_path, null=True, blank=True)
@@ -72,3 +76,11 @@ class UserWatchHistory(models.Model):
 
     def __str__(self):
         return f"{self.user} watched {self.movie} at {self.watched_at}"
+    
+class Subtitle(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='subtitles')
+    language = models.CharField(max_length=50)
+    subtitle_file = models.FileField(upload_to='subtitles/')
+
+    def __str__(self):
+        return f"Subtitle for {self.movie.title} ({self.language})"

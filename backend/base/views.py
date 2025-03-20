@@ -213,22 +213,31 @@ def top_picks(request):
     watched_movies = UserWatchHistory.objects.filter(user=user).values_list('movie', flat=True)
 
     if not watched_movies:
-        return Response({"movies": []})  # Ensure an empty list instead of a message
+        return Response({"movies": []})
 
-    genres = Movie.objects.filter(_id__in=watched_movies).values_list('genre', flat=True)
+    # Get all genres of watched movies
+    genres = Genre.objects.filter(movie__in=watched_movies).values_list('name', flat=True)
+
+    # Count the genres
     genre_counts = Counter(genres)
     top_genres = [genre for genre, _ in genre_counts.most_common(2)]
 
-    recommended_movies = Movie.objects.filter(genre__in=top_genres).exclude(_id__in=watched_movies).order_by('-_id')[:6]
+    # Get recommended movies that share the top genres
+    recommended_movies = Movie.objects.filter(
+        genre__name__in=top_genres
+    ).exclude(
+        _id__in=watched_movies
+    ).distinct().order_by('-_id')[:6]
+
     serializer = MovieSerializer(recommended_movies, many=True)
 
-    print(f"Genres from watched movies: {list(genres)}")
-    print(f"Recommended movies: {list(recommended_movies.values_list('title', flat=True))}")
-    print(f"User {user.email} watched movies: {list(watched_movies)}")
-    print(f"Top genres: {top_genres}")
-    recommended_movies = Movie.objects.filter(genre__in=top_genres).exclude(_id__in=watched_movies)
-    print(f"Recommended movies found: {recommended_movies.count()}")
+    return Response({"movies": serializer.data})
 
-
-
-    return Response({"movies": serializer.data}) 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def watch_history(request):
+    user = request.user
+    watched_entries = UserWatchHistory.objects.filter(user=user).select_related('movie')
+    movies = [entry.movie for entry in watched_entries]
+    serializer = MovieSerializer(movies, many=True)
+    return Response({"movies": serializer.data})

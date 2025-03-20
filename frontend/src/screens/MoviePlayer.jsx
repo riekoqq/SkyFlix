@@ -43,11 +43,20 @@ function MoviePlayer() {
                         height="80vh"
                         autoPlay
                         preload="metadata"
-                        onError={handleVideoError} // Handle broken video URLs
+                        onError={handleVideoError}
                     >
+                        {movie.subtitles && movie.subtitles.map((subtitle, index) => (
+                            <track
+                                key={index}
+                                src={subtitle.subtitle_file}  // ✅ Correct property from your object
+                                kind="subtitles"
+                                srcLang={subtitle.language.toLowerCase()}
+                                label={subtitle.language}
+                                default={index === 0}  // Optional: Set the first one as default
+                            />
+                        ))}
                         Your browser does not support the video tag.
                     </video>
-
                     {videoError && (
                         <Alert variant="danger" className="mt-3">
                             ❌ Error: This video is unavailable.

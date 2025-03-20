@@ -18,7 +18,7 @@ export const logWatchHistory = (movieId) => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await axios.post('/api/watch-history/', { movie_id: movieId }, config);
+        const { data } = await axios.post('/api/logs-watch-history/', { movie_id: movieId }, config);
 
         dispatch({ type: WATCH_HISTORY_SUCCESS, payload: data });
 

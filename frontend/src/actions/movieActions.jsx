@@ -12,6 +12,9 @@ import {
     MOVIE_DETAILS_FAIL,
     SEARCH_MOVIES_SUCCESS,
     SEARCH_MOVIES_FAIL,
+    MOVIE_WATCH_HISTORY_REQUEST,
+    MOVIE_WATCH_HISTORY_SUCCESS,
+    MOVIE_WATCH_HISTORY_FAIL,
 } from '../constants/movieConstants';
 
 
@@ -83,5 +86,23 @@ export const searchMovies = (query) => async (dispatch) => {
         dispatch({ type: SEARCH_MOVIES_SUCCESS, payload: data });
     } catch (error) {
         dispatch({ type: SEARCH_MOVIES_FAIL, payload: error.response?.data?.message || error.message });
+    }
+};
+
+export const listWatchHistory = () => async (dispatch, getState) => {
+    try {
+        dispatch({ type: MOVIE_WATCH_HISTORY_REQUEST });
+
+        const { userLogin: { userInfo } } = getState();
+        const config = { headers: { Authorization: `Bearer ${userInfo?.token}` } };
+
+        const { data } = await axios.get('/api/movies/watch-history/', config);
+
+        dispatch({ type: MOVIE_WATCH_HISTORY_SUCCESS, payload: data.movies || [] });
+    } catch (error) {
+        dispatch({
+            type: MOVIE_WATCH_HISTORY_FAIL,
+            payload: error.response?.data?.detail || error.message
+        });
     }
 };

@@ -2,7 +2,14 @@ from rest_framework import serializers
 from .models import *
 from rest_framework_simplejwt.tokens import RefreshToken
 
+class SubtitleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subtitle
+        fields = ['language', 'subtitle_file']
+
 class MovieSerializer(serializers.ModelSerializer):
+    subtitles = SubtitleSerializer(many=True, read_only=True)
+
     class Meta:
         model = Movie
         fields = '__all__'

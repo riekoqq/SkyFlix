@@ -11,5 +11,6 @@ urlpatterns = [
     path('users/profile', views.getUserProfile, name='user-profile'),
     path('users/', views.getUsers, name='users'),
     path('movies/search/', views.search_movies, name='search-movies'),
-    path('watch-history/', views.log_watch_history, name='log-watch-history'),
+    path('log-watch-history/', views.log_watch_history, name='log-watch-history'),
+    path('movies/watch-history/', views.watch_history, name='watch-history'),
 ]

@@ -11,6 +11,9 @@ import {
     MOVIE_DETAILS_RESET,
     SEARCH_MOVIES_SUCCESS,
     SEARCH_MOVIES_FAIL,
+    MOVIE_WATCH_HISTORY_REQUEST,
+    MOVIE_WATCH_HISTORY_SUCCESS,
+    MOVIE_WATCH_HISTORY_FAIL,
 } from '../constants/movieConstants';
 
 export const movieTopPicksReducer = (state = { movies: [] }, action) => {
@@ -61,6 +64,19 @@ export const searchMoviesReducer = (state = { movies: [] }, action) => {
             return { movies: action.payload };
         case SEARCH_MOVIES_FAIL:
             return { movies: [] };
+        default:
+            return state;
+    }
+};
+
+export const movieWatchHistoryReducer = (state = { movies: [] }, action) => {
+    switch (action.type) {
+        case MOVIE_WATCH_HISTORY_REQUEST:
+            return { loading: true, movies: [] };
+        case MOVIE_WATCH_HISTORY_SUCCESS:
+            return { loading: false, movies: action.payload };
+        case MOVIE_WATCH_HISTORY_FAIL:
+            return { loading: false, error: action.payload };
         default:
             return state;
     }
