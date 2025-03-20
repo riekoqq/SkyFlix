@@ -1,27 +1,50 @@
+// movieActions.js
 import axios from 'axios';
 import {
-    MOVIE_LIST_REQUEST,
-    MOVIE_LIST_SUCCESS,
-    MOVIE_LIST_FAIL,
+    MOVIE_TOP_PICKS_REQUEST,
+    MOVIE_TOP_PICKS_SUCCESS,
+    MOVIE_TOP_PICKS_FAIL,
+    MOVIE_RECENTLY_ADDED_REQUEST,
+    MOVIE_RECENTLY_ADDED_SUCCESS,
+    MOVIE_RECENTLY_ADDED_FAIL,
     MOVIE_DETAILS_REQUEST,
     MOVIE_DETAILS_SUCCESS,
     MOVIE_DETAILS_FAIL,
+    SEARCH_MOVIES_SUCCESS,
+    SEARCH_MOVIES_FAIL,
 } from '../constants/movieConstants';
 
-export const listMovies = () => async (dispatch) => {
+
+export const listTopPicks = () => async (dispatch, getState) => {
     try {
-        dispatch({ type: MOVIE_LIST_REQUEST });
-        const { data } = await axios.get('/api/movies/');
-        dispatch({
-            type: MOVIE_LIST_SUCCESS,
-            payload: data,
-        });
+        dispatch({ type: MOVIE_TOP_PICKS_REQUEST });
+
+        const { userLogin: { userInfo } } = getState();
+        const config = { headers: { Authorization: `Bearer ${userInfo?.token}` } };
+
+        const { data } = await axios.get('/api/movies/top-picks/', config);
+
+        dispatch({ type: MOVIE_TOP_PICKS_SUCCESS, payload: data.movies || [] }); // Ensure array
     } catch (error) {
         dispatch({
-            type: MOVIE_LIST_FAIL,
-            payload: error.response && error.response.data.message
-                ? error.response.data.message
-                : error.message,
+            type: MOVIE_TOP_PICKS_FAIL,
+            payload: error.response?.data?.detail || error.message
+        });
+    }
+};
+
+// Fetch Recently Added Movies
+export const listRecentlyAdded = () => async (dispatch) => {
+    try {
+        dispatch({ type: MOVIE_RECENTLY_ADDED_REQUEST });
+
+        const { data } = await axios.get('/api/movies/recently-added/');
+
+        dispatch({ type: MOVIE_RECENTLY_ADDED_SUCCESS, payload: data });
+    } catch (error) {
+        dispatch({ 
+            type: MOVIE_RECENTLY_ADDED_FAIL, 
+            payload: error.response && error.response.data.detail ? error.response.data.detail : error.message 
         });
     }
 };
@@ -30,9 +53,13 @@ export const listMovieDetails = (id) => async (dispatch) => {
     try {
         dispatch({ type: MOVIE_DETAILS_REQUEST });
 
-        const { data } = await axios.get(`/api/movies/${id}/`);
+        const config = {
+            withCredentials: true,
+        };
+        
 
-        // Construct video URL dynamically
+        const { data } = await axios.get(`/api/movies/${id}/`, config);
+
         const videoURL = `${process.env.REACT_APP_API_URL || ''}/api/movies/${id}/video/`;
 
         dispatch({
@@ -47,5 +74,14 @@ export const listMovieDetails = (id) => async (dispatch) => {
                 ? error.response.data.message
                 : error.message,
         });
+    }
+};
+
+export const searchMovies = (query) => async (dispatch) => {
+    try {
+        const { data } = await axios.get(`/api/movies/search/?q=${query}`);
+        dispatch({ type: SEARCH_MOVIES_SUCCESS, payload: data });
+    } catch (error) {
+        dispatch({ type: SEARCH_MOVIES_FAIL, payload: error.response?.data?.message || error.message });
     }
 };

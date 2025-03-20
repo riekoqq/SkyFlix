@@ -1,30 +1,38 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { listMovies } from '../actions/movieActions';
+import { listTopPicks, listRecentlyAdded } from '../actions/movieActions';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import MovieRow from '../components/MovieRow';
 
 function HomeScreen() {
   const dispatch = useDispatch();
-  const movieList = useSelector(state => state.movieList);
-  const { error, loading, movies } = movieList;
+
+  const movieTopPicks = useSelector(state => state.movieTopPicks);
+  const { error: errorTopPicks, loading: loadingTopPicks, movies: topPicks } = movieTopPicks;
+
+  const movieRecentlyAdded = useSelector(state => state.movieRecentlyAdded);
+  const { error: errorRecentlyAdded, loading: loadingRecentlyAdded, movies: recentlyAdded } = movieRecentlyAdded;
 
   useEffect(() => {
-    dispatch(listMovies());
+    dispatch(listTopPicks());
+    dispatch(listRecentlyAdded());
   }, [dispatch]);
+
+  console.log("Redux Recently Added:", recentlyAdded);
 
   return (
     <div>
-      {loading ? (
+      {loadingTopPicks || loadingRecentlyAdded ? (
         <Loader />
-      ) : error ? (
-        <Message variant='danger'>{error}</Message>
+      ) : errorTopPicks ? (
+        <Message variant="danger">{errorTopPicks}</Message>
+      ) : errorRecentlyAdded ? (
+        <Message variant="danger">{errorRecentlyAdded}</Message>
       ) : (
         <>
-          <MovieRow title="Trending Now" movies={movies.slice(0, 6)} />
-          <MovieRow title="Recently Added" movies={movies.slice(6, 12)} />
-          <MovieRow title="Top Picks for You" movies={movies.slice(12, 18)} />
+          <MovieRow title="Recently Added" movies={recentlyAdded.movies || []} />
+          <MovieRow title="Top Picks for You" movies={topPicks.movies || []} />
         </>
       )}
     </div>

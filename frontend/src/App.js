@@ -6,6 +6,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import MovieScreen from './screens/MovieScreen.jsx';
 import MoviePlayer from './screens/MoviePlayer.jsx';
 import LoginScreen from './screens/LoginScreen.jsx';
+import SearchResultsScreen from './screens/SearchResultsScreen.jsx';
 
 function App() {
   const location = useLocation();  
@@ -24,6 +25,7 @@ function App() {
             <Route path='/movies/:id' element={<MovieScreen />} />
             <Route path='/player/:id' element={<MoviePlayer />} />
             <Route path='/login' element={<LoginScreen />} />
+            <Route path="/search-results" element={<SearchResultsScreen />} />
           </Routes>
         </Container>
       </div>

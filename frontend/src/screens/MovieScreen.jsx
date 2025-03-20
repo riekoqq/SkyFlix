@@ -10,6 +10,8 @@ function MovieScreen() {
     const { id } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const userLogin = useSelector((state) => state.userLogin);
+    const { userInfo } = userLogin;
 
     const movieDetails = useSelector(state => state.movieDetails);
     const { error, loading, movie } = movieDetails;
@@ -45,18 +47,22 @@ function MovieScreen() {
                                 <ListGroup.Item className="bg-dark text-white">🎭 Actors: {movie.actors}</ListGroup.Item>
                             </ListGroup>
                         </Col>
-                        <Col md={12} className="mt-4 text-center">
-                            <Button 
-                                className="watch-now btn-lg mx-2" 
-                                disabled={!movie.video} 
-                                onClick={() => movie.video && navigate(`/player/${id}`, { state: { video: `${process.env.REACT_APP_API_URL}${movie.video}` } })}
-                            >
-                                🎬 Watch Now
-                            </Button>
-                            <Button className="go-back mx-2" onClick={() => navigate(-1)}>
-                                ❌
-                            </Button>
-                        </Col>
+                            <Col md={12} className="mt-4 text-center">
+                                {userInfo?.role === 'premium' || userInfo?.role === 'admin' ? (
+                                    <Button 
+                                        className="watch-now btn-lg mx-2" 
+                                        disabled={!movie.video} 
+                                        onClick={() => movie.video && navigate(`/player/${id}`, { state: { video: `${process.env.REACT_APP_API_URL}${movie.video}` } })}
+                                    >
+                                        🎬 Watch Now
+                                    </Button>
+                                ) : (
+                                    <Message variant="warning">🔒 This movie is available for Premium members only.</Message>
+                                )}
+                                <Button className="go-back mx-2" onClick={() => navigate(-1)}>
+                                    ❌
+                                </Button>
+                            </Col>
                     </Row>
                 </>
             ) : (

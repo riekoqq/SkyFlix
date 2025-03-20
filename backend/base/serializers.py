@@ -8,6 +8,7 @@ class MovieSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class UserSerializer(serializers.ModelSerializer):
+    role = serializers.SerializerMethodField(read_only=True)
     email = serializers.SerializerMethodField(read_only=True)
     _id = serializers.SerializerMethodField(read_only=True)
     isAdmin = serializers.SerializerMethodField(read_only=True)
@@ -24,6 +25,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_isAdmin(self, obj):
         return obj.is_staff
+    
+    def get_role(self, obj):
+        return obj.role
 
 
 class UserSerializerWithToken(UserSerializer):

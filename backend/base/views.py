@@ -6,18 +6,58 @@ from django.http import FileResponse, StreamingHttpResponse, HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.hashers import make_password
 from .serializers import *
 from rest_framework import status
 import os
+from rest_framework_simplejwt.tokens import AccessToken
+from collections import Counter
 
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        serializer = UserSerializerWithToken(self.user).data
+
+        for k, v in serializer.items():
+            data[k] = v
+
+        return data
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        try:
+            serializer.is_valid(raise_exception=True)
+        except Exception as e:
+            return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        response = Response(serializer.validated_data, status=status.HTTP_200_OK)
+
+        # Extract access token
+        access_token = serializer.validated_data.get('access')
+
+        # Set the access token in HttpOnly cookie
+        response.set_cookie(
+            key='access_token',
+            value=access_token,
+            httponly=True,
+            secure=False,  # Set to True in production with HTTPS
+            samesite='Lax',  # Adjust if needed (e.g., 'Strict' or 'None' for cross-site)
+            max_age=60 * 60 * 24 * 30  # Optional: 30 days expiration
+        )
+
+        return response
 
 @api_view(['GET'])
-def getMovies(request):
-    movies = Movie.objects.all()
+def recently_added(request):
+    movies = Movie.objects.all().order_by('-_id')[:6]
     serializer = MovieSerializer(movies, many=True)
-    return Response(serializer.data)
+    return Response({"movies": serializer.data})  # Wrap in "movies"
 
 @api_view(['GET'])
 def getMovie(request, pk):
@@ -25,11 +65,36 @@ def getMovie(request, pk):
     serializer = MovieSerializer(movie, many=False)
     return Response(serializer.data)
 
-from django.http import StreamingHttpResponse, HttpResponse, FileResponse
-from django.shortcuts import get_object_or_404
-import os
+def authenticate_request(request):
+    # Check Authorization header first
+    auth_header = request.headers.get('Authorization', None)
+    token_str = None
 
+    if auth_header and auth_header.startswith('Bearer '):
+        token_str = auth_header.split(' ')[1]
+    else:
+        # Fallback: Check access_token cookie
+        token_str = request.COOKIES.get('access_token', None)
+
+    if not token_str:
+        return None
+
+    try:
+        token = AccessToken(token_str)
+        user_id = token['user_id']
+        user = CustomUser.objects.get(id=user_id)
+        return user
+    except Exception as e:
+        print(f"Authentication error: {e}")
+        return None
+
+@api_view(['GET'])
 def movie_video(request, id):
+    user = authenticate_request(request)
+    if not user or user.role.lower() not in ['premium', 'admin']:
+        return HttpResponse("Forbidden: Upgrade to premium", status=403)
+
+    # Proceed with video streaming
     movie = get_object_or_404(Movie, _id=id)
     if not movie.video:
         return HttpResponse("No video available", status=404)
@@ -41,7 +106,6 @@ def movie_video(request, id):
     if range_header:
         start = 0
         end = file_size - 1
-
         try:
             range_value = range_header.strip().split('=')[1]
             range_parts = range_value.split('-')
@@ -61,7 +125,7 @@ def movie_video(request, id):
                 video_file.seek(start)
                 remaining = content_length
                 while remaining > 0:
-                    chunk_size = 8192 if remaining >= 8192 else remaining
+                    chunk_size = min(8192, remaining)
                     data = video_file.read(chunk_size)
                     if not data:
                         break
@@ -75,8 +139,8 @@ def movie_video(request, id):
         response['Cache-Control'] = 'no-store'
         return response
 
-    # No Range header, serve the full file
     return FileResponse(open(video_path, 'rb'), content_type='video/mp4')
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -100,21 +164,71 @@ def registerUser(request):
         message = {'detail': 'User with this email already exists'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    def validate(self, attrs):
-        data = super().validate(attrs)
-
-        serializer = UserSerializerWithToken(self.user).data
-
-        for k, v in serializer.items():
-            data[k] = v
-
-        return data
-
-class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class = MyTokenObtainPairSerializer
-
 def getUsers(request):
     users = CustomUser.objects.all()
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+def search_movies(request):
+    query = request.GET.get('q', '')  # Get the search query from URL params
+    if query:
+        movies = Movie.objects.filter(title__icontains=query)  # Case-insensitive search
+        results = [
+            {
+                "id": movie._id,
+                "title": movie.title,
+                "description": movie.description,
+                "image": movie.image.url if movie.image else None,
+            }
+            for movie in movies
+        ]
+        return Response(results)  # Returns a JSON response with matching movies
+    return Response([])  # Returns an empty array if no query is provided
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def log_watch_history(request):
+    user = request.user
+    movie_id = request.data.get('movie_id')
+
+    if not movie_id:
+        return Response({"error": "Movie ID is required"}, status=400)
+
+    try:
+        movie = Movie.objects.get(_id=movie_id)
+    except Movie.DoesNotExist:
+        return Response({"error": "Movie not found"}, status=404)
+
+    # Create a new watch history entry
+    watch_entry, created = UserWatchHistory.objects.get_or_create(user=user, movie=movie)
+
+    return Response({"message": "Watch history logged successfully"})
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def top_picks(request):
+    user = request.user
+
+    watched_movies = UserWatchHistory.objects.filter(user=user).values_list('movie', flat=True)
+
+    if not watched_movies:
+        return Response({"movies": []})  # Ensure an empty list instead of a message
+
+    genres = Movie.objects.filter(_id__in=watched_movies).values_list('genre', flat=True)
+    genre_counts = Counter(genres)
+    top_genres = [genre for genre, _ in genre_counts.most_common(2)]
+
+    recommended_movies = Movie.objects.filter(genre__in=top_genres).exclude(_id__in=watched_movies).order_by('-_id')[:6]
+    serializer = MovieSerializer(recommended_movies, many=True)
+
+    print(f"Genres from watched movies: {list(genres)}")
+    print(f"Recommended movies: {list(recommended_movies.values_list('title', flat=True))}")
+    print(f"User {user.email} watched movies: {list(watched_movies)}")
+    print(f"Top genres: {top_genres}")
+    recommended_movies = Movie.objects.filter(genre__in=top_genres).exclude(_id__in=watched_movies)
+    print(f"Recommended movies found: {recommended_movies.count()}")
+
+
+
+    return Response({"movies": serializer.data}) 
