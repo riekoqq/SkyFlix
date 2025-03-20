@@ -20,7 +20,7 @@ export const movieTopPicksReducer = (state = { movies: [] }, action) => {
         case MOVIE_TOP_PICKS_SUCCESS:
             return { loading: false, movies: action.payload };
         case MOVIE_TOP_PICKS_FAIL:
-            return { loading: false, error: action.payload.movies }; // Ensure movies is always an array
+            return { loading: false, error: action.payload }; // Ensure movies is always an array
         default:
             return state;
     }
