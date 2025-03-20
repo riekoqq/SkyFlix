@@ -13,9 +13,8 @@ export const listMovies = () => async (dispatch) => {
     try {
         dispatch({ type: MOVIE_LIST_REQUEST });
 
-        // Get token from localStorage        
         const config = {
-            withCredentials: true,  // This sends cookies along
+            withCredentials: true,
         };
         
 
@@ -39,15 +38,13 @@ export const listMovieDetails = (id) => async (dispatch) => {
     try {
         dispatch({ type: MOVIE_DETAILS_REQUEST });
 
-        // Get token from localStorage
         const config = {
-            withCredentials: true,  // This sends cookies along
+            withCredentials: true,
         };
         
 
         const { data } = await axios.get(`/api/movies/${id}/`, config);
 
-        // Construct video URL dynamically
         const videoURL = `${process.env.REACT_APP_API_URL || ''}/api/movies/${id}/video/`;
 
         dispatch({
