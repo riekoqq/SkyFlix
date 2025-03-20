@@ -5,7 +5,9 @@ import {
     MOVIE_DETAILS_REQUEST,
     MOVIE_DETAILS_SUCCESS,
     MOVIE_DETAILS_FAIL,
-    MOVIE_DETAILS_RESET
+    MOVIE_DETAILS_RESET,
+    SEARCH_MOVIES_SUCCESS,
+    SEARCH_MOVIES_FAIL
 } from '../constants/movieConstants';
 
 // Reducer for listing movies
@@ -33,6 +35,17 @@ export const movieDetailsReducer = (state = { movie: {} }, action) => {
             return { loading: false, error: action.payload };
         case MOVIE_DETAILS_RESET:
             return { movie: {} };
+        default:
+            return state;
+    }
+};
+
+export const searchMoviesReducer = (state = { movies: [] }, action) => {
+    switch (action.type) {
+        case SEARCH_MOVIES_SUCCESS:
+            return { movies: action.payload };
+        case SEARCH_MOVIES_FAIL:
+            return { movies: [] };
         default:
             return state;
     }

@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Container, Nav, Navbar, Form, FormControl, Button } from 'react-bootstrap';
+import { Container, Nav, Navbar, Button } from 'react-bootstrap';
 import { logout } from '../actions/userActions';
+import SearchBar from './SearchBar'; // ✅ Import SearchBar
 
 function Header() {
     const dispatch = useDispatch();
@@ -10,9 +11,6 @@ function Header() {
 
     const userLogin = useSelector(state => state.userLogin);
     const { userInfo } = userLogin;
-    console.log(userInfo);  // Check if userInfo has username
-
-
 
     const logoutHandler = () => {
         dispatch(logout());
@@ -34,15 +32,11 @@ function Header() {
                         <Link to="/browse" className="nav-link">Browse</Link>
                     </Nav>
 
-                    <Form className="d-flex me-3">
-                        <FormControl
-                            type="search"
-                            placeholder="Search movies..."
-                            className="me-2"
-                            aria-label="Search"
-                        />
-                        <Button variant="outline-light">Search</Button>
-                    </Form>
+                    {/* ✅ Integrated SearchBar */}
+                    <div className="me-3">
+                        <SearchBar />
+                    </div>
+
                     {/* ✅ Display Login or Logout */}
                     {userInfo ? (
                         <>

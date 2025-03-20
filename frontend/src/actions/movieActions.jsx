@@ -7,6 +7,8 @@ import {
     MOVIE_DETAILS_REQUEST,
     MOVIE_DETAILS_SUCCESS,
     MOVIE_DETAILS_FAIL,
+    SEARCH_MOVIES_SUCCESS,
+    SEARCH_MOVIES_FAIL,
 } from '../constants/movieConstants';
 
 export const listMovies = () => async (dispatch) => {
@@ -59,5 +61,14 @@ export const listMovieDetails = (id) => async (dispatch) => {
                 ? error.response.data.message
                 : error.message,
         });
+    }
+};
+
+export const searchMovies = (query) => async (dispatch) => {
+    try {
+        const { data } = await axios.get(`/api/movies/search/?q=${query}`);
+        dispatch({ type: SEARCH_MOVIES_SUCCESS, payload: data });
+    } catch (error) {
+        dispatch({ type: SEARCH_MOVIES_FAIL, payload: error.response?.data?.message || error.message });
     }
 };

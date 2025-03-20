@@ -1,4 +1,4 @@
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from .models import Movie, CustomUser
 from .serializers import MovieSerializer, UserSerializer
@@ -6,13 +6,13 @@ from django.http import FileResponse, StreamingHttpResponse, HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.hashers import make_password
 from .serializers import *
 from rest_framework import status
 import os
 from rest_framework_simplejwt.tokens import AccessToken
-from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.http import JsonResponse
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -168,3 +168,20 @@ def getUsers(request):
     users = CustomUser.objects.all()
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+def search_movies(request):
+    query = request.GET.get('q', '')  # Get the search query from URL params
+    if query:
+        movies = Movie.objects.filter(title__icontains=query)  # Case-insensitive search
+        results = [
+            {
+                "id": movie._id,
+                "title": movie.title,
+                "description": movie.description,
+                "image": movie.image.url if movie.image else None,
+            }
+            for movie in movies
+        ]
+        return Response(results)  # Returns a JSON response with matching movies
+    return Response([])  # Returns an empty array if no query is provided
