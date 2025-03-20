@@ -12,7 +12,7 @@ from .serializers import *
 from rest_framework import status
 import os
 from rest_framework_simplejwt.tokens import AccessToken
-from django.http import JsonResponse
+from collections import Counter
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -54,10 +54,10 @@ class MyTokenObtainPairView(TokenObtainPairView):
         return response
 
 @api_view(['GET'])
-def getMovies(request):
-    movies = Movie.objects.all()
+def recently_added(request):
+    movies = Movie.objects.all().order_by('-_id')[:6]
     serializer = MovieSerializer(movies, many=True)
-    return Response(serializer.data)
+    return Response({"movies": serializer.data})  # Wrap in "movies"
 
 @api_view(['GET'])
 def getMovie(request, pk):
@@ -185,3 +185,50 @@ def search_movies(request):
         ]
         return Response(results)  # Returns a JSON response with matching movies
     return Response([])  # Returns an empty array if no query is provided
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def log_watch_history(request):
+    user = request.user
+    movie_id = request.data.get('movie_id')
+
+    if not movie_id:
+        return Response({"error": "Movie ID is required"}, status=400)
+
+    try:
+        movie = Movie.objects.get(_id=movie_id)
+    except Movie.DoesNotExist:
+        return Response({"error": "Movie not found"}, status=404)
+
+    # Create a new watch history entry
+    watch_entry, created = UserWatchHistory.objects.get_or_create(user=user, movie=movie)
+
+    return Response({"message": "Watch history logged successfully"})
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def top_picks(request):
+    user = request.user
+
+    watched_movies = UserWatchHistory.objects.filter(user=user).values_list('movie', flat=True)
+
+    if not watched_movies:
+        return Response({"movies": []})  # Ensure an empty list instead of a message
+
+    genres = Movie.objects.filter(_id__in=watched_movies).values_list('genre', flat=True)
+    genre_counts = Counter(genres)
+    top_genres = [genre for genre, _ in genre_counts.most_common(2)]
+
+    recommended_movies = Movie.objects.filter(genre__in=top_genres).exclude(_id__in=watched_movies).order_by('-_id')[:6]
+    serializer = MovieSerializer(recommended_movies, many=True)
+
+    print(f"Genres from watched movies: {list(genres)}")
+    print(f"Recommended movies: {list(recommended_movies.values_list('title', flat=True))}")
+    print(f"User {user.email} watched movies: {list(watched_movies)}")
+    print(f"Top genres: {top_genres}")
+    recommended_movies = Movie.objects.filter(genre__in=top_genres).exclude(_id__in=watched_movies)
+    print(f"Recommended movies found: {recommended_movies.count()}")
+
+
+
+    return Response({"movies": serializer.data}) 

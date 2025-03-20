@@ -64,3 +64,11 @@ class Movie(models.Model):
 
     def __str__(self):
         return f"{self._id}. {self.title}"
+    
+class UserWatchHistory(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    watched_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user} watched {self.movie} at {self.watched_at}"

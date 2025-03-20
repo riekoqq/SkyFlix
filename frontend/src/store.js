@@ -1,14 +1,17 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { thunk } from 'redux-thunk';
-import { movieListReducer, searchMoviesReducer } from "./reducers/movieReducers";
+import { movieRecentlyAddedReducer, movieTopPicksReducer, searchMoviesReducer } from "./reducers/movieReducers";
 import { movieDetailsReducer } from "./reducers/movieReducers";
 import { userLoginReducer } from "./reducers/userReducers";
+import { watchHistoryReducer } from "./reducers/watchHistoryReducers";
 
 const reducer = combineReducers({
-    movieList: movieListReducer,
+    movieTopPicks: movieTopPicksReducer,
+    movieRecentlyAdded: movieRecentlyAddedReducer,
     movieDetails: movieDetailsReducer,
     userLogin: userLoginReducer,
-    searchMovies: searchMoviesReducer
+    searchMovies: searchMoviesReducer,
+    watchHistory: watchHistoryReducer,
 })
 
 const userInfoFromStorage = localStorage.getItem("userInfo")

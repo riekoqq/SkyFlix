@@ -1,24 +1,39 @@
 import {
-    MOVIE_LIST_REQUEST,
-    MOVIE_LIST_SUCCESS,
-    MOVIE_LIST_FAIL,
+    MOVIE_TOP_PICKS_REQUEST,
+    MOVIE_TOP_PICKS_SUCCESS,
+    MOVIE_TOP_PICKS_FAIL,
+    MOVIE_RECENTLY_ADDED_REQUEST,
+    MOVIE_RECENTLY_ADDED_SUCCESS,
+    MOVIE_RECENTLY_ADDED_FAIL,
     MOVIE_DETAILS_REQUEST,
     MOVIE_DETAILS_SUCCESS,
     MOVIE_DETAILS_FAIL,
     MOVIE_DETAILS_RESET,
     SEARCH_MOVIES_SUCCESS,
-    SEARCH_MOVIES_FAIL
+    SEARCH_MOVIES_FAIL,
 } from '../constants/movieConstants';
 
-// Reducer for listing movies
-export const movieListReducer = (state = { movies: [] }, action) => {
+export const movieTopPicksReducer = (state = { movies: [] }, action) => {
     switch (action.type) {
-        case MOVIE_LIST_REQUEST:
+        case MOVIE_TOP_PICKS_REQUEST:
             return { loading: true, movies: [] };
-        case MOVIE_LIST_SUCCESS:
+        case MOVIE_TOP_PICKS_SUCCESS:
             return { loading: false, movies: action.payload };
-        case MOVIE_LIST_FAIL:
-            return { loading: false, error: action.payload };
+        case MOVIE_TOP_PICKS_FAIL:
+            return { loading: false, error: action.payload.movies }; // Ensure movies is always an array
+        default:
+            return state;
+    }
+};
+
+export const movieRecentlyAddedReducer = (state = { movies: [] }, action) => {
+    switch (action.type) {
+        case MOVIE_RECENTLY_ADDED_REQUEST:
+            return { loading: true, movies: [] };
+        case MOVIE_RECENTLY_ADDED_SUCCESS:
+            return { loading: false, movies: action.payload };
+        case MOVIE_RECENTLY_ADDED_FAIL:
+            return { loading: false, error: action.payload }; // Ensure movies is always an array
         default:
             return state;
     }
