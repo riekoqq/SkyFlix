@@ -84,3 +84,14 @@ class Subtitle(models.Model):
 
     def __str__(self):
         return f"Subtitle for {self.movie.title} ({self.language})"
+
+class Bookmark(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='bookmarks')
+    movie = models.ForeignKey('Movie', on_delete=models.CASCADE, related_name='bookmarked_by')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'movie')
+
+    def __str__(self):
+        return f"{self.user.email} bookmarked {self.movie.title}"

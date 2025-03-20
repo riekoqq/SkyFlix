@@ -4,6 +4,7 @@ import { listTopPicks, listRecentlyAdded, listWatchHistory } from '../actions/mo
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import MovieRow from '../components/MovieRow';
+import { listBookmarks } from '../actions/bookmarkActions';
 
 function HomeScreen() {
     const dispatch = useDispatch();
@@ -17,10 +18,15 @@ function HomeScreen() {
     const movieWatchHistory = useSelector(state => state.movieWatchHistory);
     const { error: errorWatchHistory, loading: loadingWatchHistory, movies: watchHistory } = movieWatchHistory;
 
+    // ✅ Get bookmarks (watch later) from Redux
+    const bookmarkState = useSelector(state => state.bookmarks);
+    const { bookmarks } = bookmarkState;
+
     useEffect(() => {
         dispatch(listTopPicks());
         dispatch(listRecentlyAdded());
         dispatch(listWatchHistory());
+        dispatch(listBookmarks());
     }, [dispatch]);
 
     return (
@@ -33,9 +39,27 @@ function HomeScreen() {
                 </Message>
             ) : (
                 <>
-                    <MovieRow title="Recently Added" movies={recentlyAdded.movies || []} />
-                    <MovieRow title="Top Picks for You" movies={topPicks || []} />
-                    <MovieRow title="Watch Again" movies={watchHistory || []} />
+                    {recentlyAdded?.movies?.length > 0 && (
+                        <MovieRow title="Recently Added" movies={recentlyAdded.movies} />
+                    )}
+
+                    {topPicks?.length > 0 && (
+                        <MovieRow title="Top Picks for You" movies={topPicks} />
+                    )}
+
+                    {watchHistory?.length > 0 && (
+                        <MovieRow title="Watch Again" movies={watchHistory} />
+                    )}
+
+                    {/* ✅ Render Bookmarked Movies Row */}
+                    {bookmarks?.length > 0 && (
+                        <MovieRow 
+                            title="Watch Later" 
+                            movies={bookmarks
+                                        .map(b => b.movie)
+                                        .filter(movie => movie && movie._id)} 
+                        />
+                    )}
                 </>
             )}
         </div>

@@ -241,3 +241,34 @@ def watch_history(request):
     movies = [entry.movie for entry in watched_entries]
     serializer = MovieSerializer(movies, many=True)
     return Response({"movies": serializer.data})
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_bookmark(request, movie_id):
+    try:
+        movie = Movie.objects.get(_id=movie_id)
+        bookmark, created = Bookmark.objects.get_or_create(user=request.user, movie=movie)
+        if created:
+            return Response({'detail': 'Movie bookmarked'}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'detail': 'Movie already bookmarked'}, status=status.HTTP_200_OK)
+    except Movie.DoesNotExist:
+        return Response({'detail': 'Movie not found'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def remove_bookmark(request, movie_id):
+    try:
+        movie = Movie.objects.get(_id=movie_id)
+        bookmark = Bookmark.objects.get(user=request.user, movie=movie)
+        bookmark.delete()
+        return Response({'detail': 'Bookmark removed'}, status=status.HTTP_200_OK)
+    except (Movie.DoesNotExist, Bookmark.DoesNotExist):
+        return Response({'detail': 'Bookmark not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_bookmarks(request):
+    bookmarks = Bookmark.objects.filter(user=request.user)
+    serializer = BookmarkSerializer(bookmarks, many=True)
+    return Response(serializer.data)

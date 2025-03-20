@@ -4,6 +4,7 @@ import { movieRecentlyAddedReducer, movieTopPicksReducer, movieWatchHistoryReduc
 import { movieDetailsReducer } from "./reducers/movieReducers";
 import { userLoginReducer } from "./reducers/userReducers";
 import { watchHistoryReducer } from "./reducers/watchHistoryReducers";
+import { bookmarkReducer } from "./reducers/bookmarkReducers";
 
 const reducer = combineReducers({
     movieTopPicks: movieTopPicksReducer,
@@ -13,6 +14,7 @@ const reducer = combineReducers({
     searchMovies: searchMoviesReducer,
     watchHistory: watchHistoryReducer,
     movieWatchHistory: movieWatchHistoryReducer,
+    bookmarks: bookmarkReducer
 })
 
 const userInfoFromStorage = localStorage.getItem("userInfo")
