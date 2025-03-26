@@ -279,3 +279,22 @@ def get_bookmarks(request):
     bookmarks = Bookmark.objects.filter(user=request.user)
     serializer = BookmarkSerializer(bookmarks, many=True)
     return Response(serializer.data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def subscribe(request):
+    user = request.user
+    user.role = 'premium'
+    user.save()
+
+    refresh = RefreshToken.for_user(user)
+    access_token = str(refresh.access_token)
+
+    response = Response({
+        'detail': 'Subscription successful',
+        'access': access_token,
+        'refresh': str(refresh),  # Include refresh token
+    }, status=status.HTTP_200_OK)
+
+    response.set_cookie('access_token', access_token, httponly=True)
+    return response
