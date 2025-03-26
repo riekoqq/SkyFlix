@@ -153,15 +153,22 @@ def getUserProfile(request):
 def registerUser(request):
     data = request.data
     try:
+        # Ensure all required fields are passed
+        if not data.get('email') or not data.get('password'):
+            return Response({'detail': 'Username, email, and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create the new user
         user = CustomUser.objects.create(
-            username=data['username'],
             email=data['email'],
-            password=make_password(data['password'])
+            role=data.get('role', 'free'),  # Default role if not provided
+            password=make_password(data['password'])  # Hash the password
         )
+
         serializer = UserSerializerWithToken(user, many=False)
-        return Response(serializer.data)
-    except:
-        message = {'detail': 'User with this email already exists'}
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    except Exception as e:
+        message = {'detail': str(e)}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 def getUsers(request):

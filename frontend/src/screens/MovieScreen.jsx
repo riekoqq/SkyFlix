@@ -104,7 +104,7 @@ function MovieScreen() {
 
                             <motion.button
                                 className="go-back mx-2"
-                                onClick={() => navigate(-1)}
+                                onClick={() => navigate('/')}
                                 whileTap={{ scale: 0.9 }}
                                 whileHover={{ scale: 1.05 }}
                             >

@@ -7,6 +7,8 @@ import MovieScreen from './screens/MovieScreen.jsx';
 import MoviePlayer from './screens/MoviePlayer.jsx';
 import LoginScreen from './screens/LoginScreen.jsx';
 import SearchResultsScreen from './screens/SearchResultsScreen.jsx';
+import RegisterScreen from './screens/RegisterScreen.jsx';
+import ProfileScreen from './screens/ProfileScreen.jsx';
 
 function App() {
   const location = useLocation();  
@@ -26,6 +28,8 @@ function App() {
             <Route path='/player/:id' element={<MoviePlayer />} />
             <Route path='/login' element={<LoginScreen />} />
             <Route path="/search-results" element={<SearchResultsScreen />} />
+            <Route path='/register' element={<RegisterScreen />} />
+            <Route path='/profile' element={<ProfileScreen />} />
           </Routes>
         </Container>
       </div>

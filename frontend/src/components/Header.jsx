@@ -29,7 +29,6 @@ function Header() {
                                 <i className="fa-solid fa-user"></i> Account
                             </Link>
                         )}
-                        <Link to="/browse" className="nav-link">Browse</Link>
                     </Nav>
 
                     {/* ✅ Integrated SearchBar */}

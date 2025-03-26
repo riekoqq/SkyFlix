@@ -2,7 +2,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { thunk } from 'redux-thunk';
 import { movieRecentlyAddedReducer, movieTopPicksReducer, movieWatchHistoryReducer, searchMoviesReducer } from "./reducers/movieReducers";
 import { movieDetailsReducer } from "./reducers/movieReducers";
-import { userLoginReducer } from "./reducers/userReducers";
+import { userLoginReducer, userProfileReducer, userRegisterReducer } from "./reducers/userReducers";
 import { watchHistoryReducer } from "./reducers/watchHistoryReducers";
 import { bookmarkReducer } from "./reducers/bookmarkReducers";
 
@@ -11,6 +11,8 @@ const reducer = combineReducers({
     movieRecentlyAdded: movieRecentlyAddedReducer,
     movieDetails: movieDetailsReducer,
     userLogin: userLoginReducer,
+    userRegister: userRegisterReducer,
+    userProfile: userProfileReducer,
     searchMovies: searchMoviesReducer,
     watchHistory: watchHistoryReducer,
     movieWatchHistory: movieWatchHistoryReducer,
