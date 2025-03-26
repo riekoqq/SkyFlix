@@ -87,24 +87,24 @@ export const register = (email, password, role = 'free') => async (dispatch) => 
 
 export const userProfile = () => async (dispatch, getState) => {
     try {
-        dispatch({ type: USER_PROFILE_REQUEST });
-
-        const { userLogin: { userInfo } } = getState();
-
-        const headers = {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${userInfo.token}`,
-        };
-
-        const { data } = await axios.get('/api/users/profile', { headers });
-
-        dispatch({ type: USER_PROFILE_SUCCESS, payload: data });
+      dispatch({ type: USER_PROFILE_REQUEST });
+  
+      const { userLogin } = getState();
+      const token = userLogin?.userInfo?.token;
+  
+      const response = await fetch("/api/users/profile", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      const data = await response.json();
+      console.log("Fetched User Profile:", data);
+  
+      dispatch({ type: USER_PROFILE_SUCCESS, payload: data });
     } catch (error) {
-        dispatch({  
-            type: USER_PROFILE_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        });
+      dispatch({ type: USER_PROFILE_FAIL, payload: error.message });
     }
-};
+  };
+  
