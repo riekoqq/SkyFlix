@@ -1,0 +1,82 @@
+/* Payment Screen Container */
+.payment-screen {
+    max-width: 600px; /* Wider for horizontal layout */
+    margin: 50px auto;
+    padding: 30px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1); /* Glassmorphism */
+    backdrop-filter: blur(10px);
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    animation: fadeIn 0.6s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Heading */
+.payment-screen h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+/* Payment Options (Horizontal Layout) */
+.payment-options {
+    display: flex;
+    flex-direction: row; /* ✅ Horizontal layout */
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* Payment Option Styling */
+.payment-options .form-check {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 12px 18px;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+    text-align: center;
+    min-width: 150px;
+}
+
+.payment-options .form-check:hover {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* Radio Button Label */
+.payment-options .form-check label {
+    color: #ddd;
+    font-size: 1.1rem;
+}
+
+/* Button */
+.payment-screen button {
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 8px;
+    width: 100%;
+    background: linear-gradient(135deg, #850000, #250000);
+    color: white;
+    transition: 0.3s ease-in-out;
+    border: none;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    margin-top: 20px;
+}
+
+.payment-screen button:hover {
+    background: linear-gradient(135deg, #a00000, #400000);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Responsive: Switch to vertical on small screens */
+@media (max-width: 600px) {
+    .payment-options {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

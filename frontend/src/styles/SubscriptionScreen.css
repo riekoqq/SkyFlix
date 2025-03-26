@@ -1,0 +1,34 @@
+.subscription-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+    width: 100%;
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  
+  .subscription-card {
+    background: rgba(0, 0, 0, 0.8); /* Darker background to blend in */
+    color: white !important;
+    border-radius: 10px;
+    padding: 20px;
+    width: 400px;
+    text-align: center;
+  }
+  
+  .subscription-card h3 {
+    color: #fff !important; /* White text for better contrast */
+  }
+  
+  .list-group-item {
+    background: transparent !important;
+    border: none;
+    color: #fff !important;
+  }
+  
+  .paypal-buttons {
+    margin-top: 15px;
+  }
+  

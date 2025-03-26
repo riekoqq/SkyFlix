@@ -1,0 +1,84 @@
+/* Checkout Steps Container (Horizontal Layout) */
+.checkout-steps {
+    display: flex;
+    flex-direction: row; /* ✅ Set to horizontal */
+    align-items: center;
+    justify-content: center; /* ✅ Center the steps */
+    gap: 20px; /* ✅ Space between steps */
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1); /* Glassmorphism */
+    backdrop-filter: blur(8px);
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    width: auto; /* ✅ Adapt width dynamically */
+}
+
+/* Step Items */
+.checkout-steps .nav-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Links Formatting */
+.checkout-steps .nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ddd;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+/* Active Steps */
+.checkout-steps .nav-link:not([disabled]) {
+    background: linear-gradient(135deg, #850000, #250000);
+    color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Hover Effect */
+.checkout-steps .nav-link:not([disabled]):hover {
+    background: linear-gradient(135deg, #a00000, #400000);
+    transform: scale(1.05);
+}
+
+/* Disabled Steps */
+.checkout-steps .nav-link[disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+    background: rgba(255, 255, 255, 0.2);
+    color: #bbb;
+}
+
+/* Progress Line (Horizontal Connector) */
+.checkout-steps .nav-item:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%);
+    width: 20px; /* ✅ Horizontal line length */
+    height: 2px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .checkout-steps {
+        flex-direction: column; /* ✅ Switch to vertical on small screens */
+        align-items: center;
+    }
+
+    .checkout-steps .nav-item:not(:last-child)::after {
+        width: 2px;
+        height: 15px; /* ✅ Vertical on mobile */
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
