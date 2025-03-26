@@ -16,4 +16,5 @@ urlpatterns = [
     path('bookmark/<int:movie_id>/add/', views.add_bookmark, name='add-bookmark'),
     path('bookmark/<int:movie_id>/remove/', views.remove_bookmark, name='remove-bookmark'),
     path('bookmark/', views.get_bookmarks, name='get-bookmarks'),
+    path('subscribe/', views.subscribe, name='subscribe'),
 ]
