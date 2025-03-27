@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'base',
     'rest_framework',
     'corsheaders',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -131,13 +132,15 @@ import os
 
 STATIC_URL = 'static/'
 
-STATICFILES_DIRS = [BASE_DIR / "static_my_project", ]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static_my_project")]
 
 STATIC_ROOT =  os.path.join(BASE_DIR, "static cdn", "static root")
 
 MEDIA_URL = 'media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "static cdn", "media root")
+
+from Backend.aws.conf import *
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -201,3 +204,8 @@ CSRF_COOKIE_SECURE              = True
 SECURE_HSTS_INCLUDE_SUBDOMAINS  = True
 SECURE_HSTS_SECONDS             = 1000000
 SECURE_FRAME_DENY               = True
+
+AWS_GROUP_NAME = "skyflix_group"
+AWS_USERNAME = "Skyflix_user"
+AWS_ACCESS_KEY_ID = "AKIAQDXFYHNAWOPOBSUL"
+AWS_SECRET_KEY = "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"
