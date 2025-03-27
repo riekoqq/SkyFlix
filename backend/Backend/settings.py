@@ -140,8 +140,6 @@ MEDIA_URL = 'media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "static cdn", "media root")
 
-from Backend.aws.conf import *
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -209,3 +207,5 @@ AWS_GROUP_NAME = "skyflix_group"
 AWS_USERNAME = "Skyflix_user"
 AWS_ACCESS_KEY_ID = "AKIAQDXFYHNAWOPOBSUL"
 AWS_SECRET_KEY = "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"
+
+from .aws.conf import *

@@ -21,7 +21,7 @@ export const subscribe = () => async (dispatch, getState) => {
         };
 
         // Make the subscription request
-        const { data } = await axios.post('/api/subscribe/', {}, config);
+        const { data } = await axios.post('https://skyflix-backend-742023edbdaa.herokuapp.com/api/subscribe/', {}, config);
 
         dispatch({ type: SUBSCRIBE_SUCCESS, payload: data });
 

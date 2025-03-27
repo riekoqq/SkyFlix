@@ -17,7 +17,7 @@ export const addBookmark = (movieId) => async (dispatch, getState) => {
 
         const { userLogin: { userInfo } } = getState();
 
-        await axios.post(`/api/bookmark/${movieId}/add/`, {}, {
+        await axios.post(`https://skyflix-backend-742023edbdaa.herokuapp.com/api/bookmark/${movieId}/add/`, {}, {
         headers: {
             Authorization: `Bearer ${userInfo.token}`,
         },
@@ -40,7 +40,7 @@ export const removeBookmark = (movieId) => async (dispatch, getState) => {
 
         const { userLogin: { userInfo } } = getState();
 
-        await axios.delete(`/api/bookmark/${movieId}/remove/`, {
+        await axios.delete(`https://skyflix-backend-742023edbdaa.herokuapp.com/api/bookmark/${movieId}/remove/`, {
         headers: {
             Authorization: `Bearer ${userInfo.token}`,
         },
@@ -63,7 +63,7 @@ export const listBookmarks = () => async (dispatch, getState) => {
 
         const { userLogin: { userInfo } } = getState();
 
-        const { data } = await axios.get('/api/bookmark/', {
+        const { data } = await axios.get('https://skyflix-backend-742023edbdaa.herokuapp.com/api/bookmark/', {
             headers: {
                 Authorization: `Bearer ${userInfo.token}`,
             },

@@ -24,7 +24,7 @@ export const login = (email, password) => async (dispatch) => {
         };
 
         const { data } = await axios.post(
-            '/api/users/login',
+            'https://skyflix-backend-742023edbdaa.herokuapp.com/api/users/login',
             { email, password },
             config
         );
@@ -62,7 +62,7 @@ export const register = (email, password, role = 'free') => async (dispatch) => 
         };
 
         const { data } = await axios.post(
-            '/api/users/register',
+            'https://skyflix-backend-742023edbdaa.herokuapp.com/api/users/register',
             { email, password, role },
             config
         );
@@ -92,7 +92,7 @@ export const userProfile = () => async (dispatch, getState) => {
       const { userLogin } = getState();
       const token = userLogin?.userInfo?.token;
   
-      const response = await fetch("/api/users/profile", {
+      const response = await fetch("https://skyflix-backend-742023edbdaa.herokuapp.com/api/users/profile", {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

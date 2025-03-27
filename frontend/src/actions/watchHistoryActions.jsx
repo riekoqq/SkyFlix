@@ -18,7 +18,7 @@ export const logWatchHistory = (movieId) => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await axios.post('/api/movies/log-watch-history/', { movie_id: movieId }, config);
+        const { data } = await axios.post('https://skyflix-backend-742023edbdaa.herokuapp.com/api/movies/log-watch-history/', { movie_id: movieId }, config);
 
         dispatch({ type: WATCH_HISTORY_SUCCESS, payload: data });
 

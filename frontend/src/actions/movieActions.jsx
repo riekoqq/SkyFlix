@@ -25,7 +25,7 @@ export const listTopPicks = () => async (dispatch, getState) => {
         const { userLogin: { userInfo } } = getState();
         const config = { headers: { Authorization: `Bearer ${userInfo?.token}` } };
 
-        const { data } = await axios.get('/api/movies/top-picks/', config);
+        const { data } = await axios.get('https://skyflix-backend-742023edbdaa.herokuapp.com/api/movies/top-picks/', config);
 
         dispatch({ type: MOVIE_TOP_PICKS_SUCCESS, payload: data.movies || [] }); // Ensure array
     } catch (error) {
@@ -41,7 +41,7 @@ export const listRecentlyAdded = () => async (dispatch) => {
     try {
         dispatch({ type: MOVIE_RECENTLY_ADDED_REQUEST });
 
-        const { data } = await axios.get('/api/movies/recently-added/');
+        const { data } = await axios.get('https://skyflix-backend-742023edbdaa.herokuapp.com/api/movies/recently-added/');
 
         dispatch({ type: MOVIE_RECENTLY_ADDED_SUCCESS, payload: data });
     } catch (error) {
@@ -61,9 +61,9 @@ export const listMovieDetails = (id) => async (dispatch) => {
         };
         
 
-        const { data } = await axios.get(`/api/movies/${id}/`, config);
+        const { data } = await axios.get(`https://skyflix-backend-742023edbdaa.herokuapp.com/api/movies/${id}/`, config);
 
-        const videoURL = `${process.env.REACT_APP_API_URL || ''}/api/movies/${id}/video/`;
+        const videoURL = `${process.env.REACT_APP_API_URL || ''}https://skyflix-backend-742023edbdaa.herokuapp.com/api/movies/${id}/video/`;
 
         dispatch({
             type: MOVIE_DETAILS_SUCCESS,
@@ -82,7 +82,7 @@ export const listMovieDetails = (id) => async (dispatch) => {
 
 export const searchMovies = (query) => async (dispatch) => {
     try {
-        const { data } = await axios.get(`/api/movies/search/?q=${query}`);
+        const { data } = await axios.get(`https://skyflix-backend-742023edbdaa.herokuapp.com/api/movies/search/?q=${query}`);
         dispatch({ type: SEARCH_MOVIES_SUCCESS, payload: data });
     } catch (error) {
         dispatch({ type: SEARCH_MOVIES_FAIL, payload: error.response?.data?.message || error.message });
@@ -96,7 +96,7 @@ export const listWatchHistory = () => async (dispatch, getState) => {
         const { userLogin: { userInfo } } = getState();
         const config = { headers: { Authorization: `Bearer ${userInfo?.token}` } };
 
-        const { data } = await axios.get('/api/movies/watch-history/', config);
+        const { data } = await axios.get('https://skyflix-backend-742023edbdaa.herokuapp.com/api/movies/watch-history/', config);
 
         dispatch({ type: MOVIE_WATCH_HISTORY_SUCCESS, payload: data.movies || [] });
     } catch (error) {
