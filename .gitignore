@@ -31,5 +31,3 @@ env/
 static cdn/
 static_my_project/
 static/
-
-db.sqlite3
