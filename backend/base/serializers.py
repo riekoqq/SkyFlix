@@ -4,6 +4,13 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.conf import settings
 
 class SubtitleSerializer(serializers.ModelSerializer):
+    subtitle_file = serializers.SerializerMethodField()
+
+    def get_subtitle_file(self, obj):
+        if obj.subtitle_file:
+            return f"{settings.MEDIA_URL}{obj.subtitle_file.name}"  # ✅ Ensure MEDIA_URL is applied
+        return None
+
     class Meta:
         model = Subtitle
         fields = ['language', 'subtitle_file']
@@ -11,21 +18,26 @@ class SubtitleSerializer(serializers.ModelSerializer):
 class MovieSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField(read_only=True)
     video_url = serializers.SerializerMethodField(read_only=True)
-    subtitles = SubtitleSerializer(many=True, read_only=True)
+    subtitles = SubtitleSerializer(many=True, read_only=True)  # ✅ Keep `many=True`
 
     def get_image_url(self, obj):
         if obj.image:
-            return f"{settings.MEDIA_URL}{obj.image}"
+            return f"{settings.MEDIA_URL}{obj.image.name}"  # ✅ Use `.name`
         return None
     
     def get_video_url(self, obj):
         if obj.video:
-            return f"{settings.MEDIA_URL}{obj.video}"
+            return f"{settings.MEDIA_URL}{obj.video.name}"  # ✅ Use `.name`
         return None
+    
+    def get_subtitles(self, obj):
+        obj.subtitles = Subtitle.objects.filter(movie=obj)
+        return SubtitleSerializer(obj.subtitles.all(), many=True).data
 
     class Meta:
         model = Movie
         fields = '__all__'
+
 
 class UserSerializer(serializers.ModelSerializer):
     role = serializers.SerializerMethodField(read_only=True)
