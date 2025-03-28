@@ -88,58 +88,27 @@ def authenticate_request(request):
         print(f"Authentication error: {e}")
         return None
 
+from django.conf import settings
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+
 @api_view(['GET'])
 def movie_video(request, id):
     user = authenticate_request(request)
     if not user or user.role.lower() not in ['premium', 'admin']:
-        return HttpResponse("Forbidden: Upgrade to premium", status=403)
+        return JsonResponse({"detail": "Forbidden: Upgrade to premium"}, status=403)
 
-    # Proceed with video streaming
+    # Fetch movie object
     movie = get_object_or_404(Movie, _id=id)
-    if not movie.video:
-        return HttpResponse("No video available", status=404)
+    
+    if not movie.video:  # Ensure video exists
+        return JsonResponse({"detail": "No video available"}, status=404)
 
-    video_path = movie.video.path
-    file_size = os.path.getsize(video_path)
-    range_header = request.headers.get('Range', None)
+    # Construct full S3 URL
+    s3_base_url = "https://skyflix-bucket.s3.ap-southeast-2.amazonaws.com/"
+    video_url = f"{s3_base_url}{movie.video}"
 
-    if range_header:
-        start = 0
-        end = file_size - 1
-        try:
-            range_value = range_header.strip().split('=')[1]
-            range_parts = range_value.split('-')
-            if range_parts[0]:
-                start = int(range_parts[0])
-            if len(range_parts) > 1 and range_parts[1]:
-                end = int(range_parts[1])
-            if start >= file_size:
-                return HttpResponse("Requested Range Not Satisfiable", status=416)
-        except (ValueError, IndexError):
-            return HttpResponse("Invalid Range Header", status=400)
-
-        content_length = (end - start) + 1
-
-        def stream():
-            with open(video_path, 'rb') as video_file:
-                video_file.seek(start)
-                remaining = content_length
-                while remaining > 0:
-                    chunk_size = min(8192, remaining)
-                    data = video_file.read(chunk_size)
-                    if not data:
-                        break
-                    remaining -= len(data)
-                    yield data
-
-        response = StreamingHttpResponse(stream(), status=206, content_type='video/mp4')
-        response['Content-Length'] = str(content_length)
-        response['Content-Range'] = f'bytes {start}-{end}/{file_size}'
-        response['Accept-Ranges'] = 'bytes'
-        response['Cache-Control'] = 'no-store'
-        return response
-
-    return FileResponse(open(video_path, 'rb'), content_type='video/mp4')
+    return JsonResponse({"video_url": video_url})
 
 
 @api_view(['GET'])

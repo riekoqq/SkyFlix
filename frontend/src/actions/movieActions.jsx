@@ -63,7 +63,7 @@ export const listMovieDetails = (id) => async (dispatch) => {
 
         const { data } = await axios.get(`https://skyflix-backend-742023edbdaa.herokuapp.com/api/movies/${id}/`, config);
 
-        const videoURL = 'https://skyflix-bucket.s3.ap-southeast-2.amazonaws.com/media/img/1950501552/1950501552.mp4';
+        const videoURL = `${process.env.REACT_APP_API_URL || ''}https://skyflix-backend-742023edbdaa.herokuapp.com/api/movies/${id}/video/`;
 
         dispatch({
             type: MOVIE_DETAILS_SUCCESS,
