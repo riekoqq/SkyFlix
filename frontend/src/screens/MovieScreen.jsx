@@ -61,7 +61,7 @@ function MovieScreen() {
                                 transition={{ duration: 0.5 }}
                             >
                                 <Image 
-                                    src={movie.image || '/placeholder-image.jpg'} 
+                                    src={movie.image_url || '/placeholder-image.jpg'} 
                                     alt={movie.title} 
                                     fluid 
                                     className="rounded shadow-lg"
@@ -81,8 +81,8 @@ function MovieScreen() {
                             {userInfo?.role === 'premium' || userInfo?.role === 'admin' ? (
                                 <motion.button 
                                     className="watch-now btn-lg mx-2" 
-                                    disabled={!movie.video} 
-                                    onClick={() => movie.video && navigate(`/player/${id}`, { state: { video: `${process.env.REACT_APP_API_URL}${movie.video}` } })}
+                                    disabled={!movie.video_url} 
+                                    onClick={() => movie.video_url && navigate(`/player/${id}`, { state: { video: `${process.env.REACT_APP_API_URL}${movie.video}` } })}
                                     whileTap={{ scale: 0.9 }}
                                     whileHover={{ scale: 1.05 }}
                                 >

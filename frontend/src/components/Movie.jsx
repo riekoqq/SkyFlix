@@ -7,7 +7,7 @@ function Movie({ movie }) {
         <Card className="rounded border-0" style={{ width: '250px', marginRight: '10px' }}>
             <Link to={`/movies/${movie._id}`}>
                 <Card.Img 
-                    src={movie.image} 
+                    src={movie.image_url} 
                     className="img-fluid rounded" 
                     style={{ 
                         width: '100%', 

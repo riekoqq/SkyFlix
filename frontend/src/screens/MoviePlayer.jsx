@@ -37,7 +37,7 @@ function MoviePlayer() {
             ) : movie?.video ? (
                 <>
                     <video
-                        src={movie.video}
+                        src={movie.video_url}
                         controls
                         width="100%"
                         height="80vh"
