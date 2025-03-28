@@ -202,10 +202,3 @@ CSRF_COOKIE_SECURE              = True
 SECURE_HSTS_INCLUDE_SUBDOMAINS  = True
 SECURE_HSTS_SECONDS             = 1000000
 SECURE_FRAME_DENY               = True
-
-AWS_GROUP_NAME = "skyflix_group"
-AWS_USERNAME = "Skyflix_user"
-AWS_ACCESS_KEY_ID = "AKIAQDXFYHNARXSZZV4V"
-AWS_SECRET_KEY = "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"
-
-from .aws.conf import *
