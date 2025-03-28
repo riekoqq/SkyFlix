@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import *
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.conf import settings
 
 class SubtitleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -8,7 +9,19 @@ class SubtitleSerializer(serializers.ModelSerializer):
         fields = ['language', 'subtitle_file']
 
 class MovieSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField(read_only=True)
+    video_url = serializers.SerializerMethodField(read_only=True)
     subtitles = SubtitleSerializer(many=True, read_only=True)
+
+    def get_image_url(self, obj):
+        if obj.image:
+            return f"{settings.MEDIA_URL}{obj.image}"
+        return None
+    
+    def get_video_url(self, obj):
+        if obj.video:
+            return f"{settings.MEDIA_URL}{obj.video}"
+        return None
 
     class Meta:
         model = Movie
